@@ -27,6 +27,7 @@ public class DatamuseServlet extends HttpServlet {
                 word = word.substring(0, word.length()-1);
             }
             count++;
+            try {
             URL url = new URL("https://api.datamuse.com/words?md=p&sp=" + word + "&max=1");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -34,22 +35,22 @@ public class DatamuseServlet extends HttpServlet {
             con.setRequestProperty("Content-Type", "application/json");
 
             StringBuilder output;
-            try (BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-                String line;
-                output = new StringBuilder();
+            BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String line;
+            output = new StringBuilder();
 
-                while ((line = input.readLine()) != null) {
-                    output.append(line);
-                }
-                String str =  output.toString();
-                if (str.contains("[\"n\"]") || str.contains("[\"adj\"]")){
-                    resultList.add(word);
-                }
+            while ((line = input.readLine()) != null) {
+                output.append(line);
+            }
+            String str =  output.toString();
+            if (str.contains("[\"n\"]") || str.contains("[\"adj\"]")){
+                resultList.add(word);
+            }
                 
             } catch (Exception e)  { 
                     System.out.println(e.getMessage()); 
             }     
         }    
         response.getWriter().println(resultList);
-  }
+   }
 }
